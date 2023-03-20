@@ -66,6 +66,10 @@ class SquareRoutine : public rclcpp::Node
 		delta_theta = fabs(fabs(theta_now) - fabs(last_theta));
 		total_theta += delta_theta;
 		last_theta = theta_now;
+		if (theta_now < 0)
+		{
+			theta_now += 6.28;
+		}
 		
 		//RCLCPP_INFO(this->get_logger(), "Odom Acquired.");
 	}
@@ -77,25 +81,9 @@ class SquareRoutine : public rclcpp::Node
         	
 		// Calculate distance travelled from initial
 		d_now =	pow( pow(x_now - x_init, 2) + pow(y_now - y_init, 2), 0.5 );
-		float current_heading;
+		float current_heading = theta_now;
 		
 		// Keep moving if not reached last distance target
-		if (theta_now < 0)
-		{
-			current_heading = 6.28318 + theta_now;
-			if (count_ == 4)
-			{
-			    heading = 6.28;
-			    }
-		}
-		else
-		{
-			current_heading = theta_now;
-			if (count_ == 4)
-			{
-			    heading = 0;
-			    }
-		}
 		
 		float remaining_angle = theta_target - total_theta;
 		if (remaining_angle > 0)
@@ -147,25 +135,17 @@ class SquareRoutine : public rclcpp::Node
 		{
 			switch(count_) 
 			{
-			  case 0:
-			  	heading = 1.57;
-			  	
-			    move_distance(1.0);
+			  case 0:			  	
+			    move_distance(.95);
 			    break;
 			  case 1:
-			  	heading = 3.14;
-			  	
-			    move_distance(1.0);
+			    move_distance(.95);
 			    break;
 			  case 2:
-			  	heading = 4.71;
-			  	
-			    move_distance(1.0);
+			    move_distance(.95);
 			    break;
 			  case 3:
-			  	heading = 0;
-				
-			    move_distance(1.0);
+			    move_distance(.95);
 			    break; 
 			  default:
 			    break;
@@ -182,7 +162,12 @@ class SquareRoutine : public rclcpp::Node
 		y_init = y_now;
 		count_++;		// advance state counter
 		last_state_complete = 0;
-		total_theta = 0;	
+		total_theta = 0;
+		heading = theta_now + 1.57;
+		if (heading > 6.28)
+		{
+			heading -= 6.28;	
+			}	
 	}
 	
 
@@ -199,7 +184,7 @@ class SquareRoutine : public rclcpp::Node
 	double x_vel = 0.2;
 	double theta_vel = 0.25;
 	double x_now = 0, x_init = 0, y_now = 0, y_init = 0;
-	double theta_now = 0, theta_target = 1.5;
+	double theta_now = 0, theta_target = 1.55;
 	double total_theta = 0, delta_theta = 0, last_theta = 0;
 	double d_now = 0, d_aim = 0;
 	double heading = 0, heading_correction = 0;
