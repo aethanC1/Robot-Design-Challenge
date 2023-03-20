@@ -143,27 +143,28 @@ class SquareRoutine : public rclcpp::Node
 	{	
 		geometry_msgs::msg::Twist msg;
 		if (last_state_complete == 1)
+		//switch cases, reset movement distance, and set course heading robot should be moving in
 		{
 			switch(count_) 
 			{
 			  case 0:
 			  	heading = 1.57;
-			  	theta_target = 1.5;
+			  	
 			    move_distance(1.0);
 			    break;
 			  case 1:
 			  	heading = 3.14;
-			  	theta_target = 1.5;
+			  	
 			    move_distance(1.0);
 			    break;
 			  case 2:
 			  	heading = 4.71;
-			  	theta_target = 1.5;
+			  	
 			    move_distance(1.0);
 			    break;
 			  case 3:
 			  	heading = 0;
-				theta_target = 1.5;
+				
 			    move_distance(1.0);
 			    break; 
 			  default:
@@ -198,7 +199,7 @@ class SquareRoutine : public rclcpp::Node
 	double x_vel = 0.2;
 	double theta_vel = 0.25;
 	double x_now = 0, x_init = 0, y_now = 0, y_init = 0;
-	double theta_now = 0, theta_target = 0;
+	double theta_now = 0, theta_target = 1.5;
 	double total_theta = 0, delta_theta = 0, last_theta = 0;
 	double d_now = 0, d_aim = 0;
 	double heading = 0, heading_correction = 0;
