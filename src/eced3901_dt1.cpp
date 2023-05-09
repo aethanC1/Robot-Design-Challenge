@@ -66,6 +66,7 @@ class SquareRoutine : public rclcpp::Node
 		m.getRPY(roll, pitch, yaw);
 		theta_now = yaw;
 		//RCLCPP_INFO(this->get_logger(), "Odom Acquired.");
+		std::cout yaw;
 	}
 	
 	void timer_callback()
@@ -77,7 +78,8 @@ class SquareRoutine : public rclcpp::Node
 		
 		// Keep moving if not reached last distance target
 		if (abs(theta_target - theta_now)< 0.05)
-		{
+		{	
+			std::cout theta_target;
 			msg.linear.x = 0;
 			msg.angular.z = theta_vel;
 			publisher_->publish(msg);
@@ -155,7 +157,7 @@ class SquareRoutine : public rclcpp::Node
 	
 	// Declaration of Class Variables
 	double x_vel = 0.2;
-	double theta_vel = 0.5;
+	double theta_vel = 0.2;
 	double x_now = 0, x_init = 0, y_now = 0, y_init = 0;
 	double theta_now = 0, theta_target = 0;
 	double d_now = 0, d_aim = 0;
