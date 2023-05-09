@@ -82,7 +82,7 @@ class SquareRoutine : public rclcpp::Node
 		{	
 
 			msg.linear.x = x_vel;
-			msg.angular.z = theta_vel;
+			msg.angular.z = 0;
 			publisher_->publish(msg);		
 		}
 		// If done step, stop
@@ -100,6 +100,18 @@ class SquareRoutine : public rclcpp::Node
 
 		//RCLCPP_INFO(this->get_logger(), "Published cmd_vel.");
 	}
+	void rotate_90()
+	{	
+		geometry_msgs::msg::Twist msg;
+		double target = theta_now + 1.57;
+		
+		while (target > theta_now)
+		{
+			msg.angular.z = theta_vel;
+			publisher_->publish(msg);
+		}
+
+	}
 	
 	void sequence_statemachine()
 	{	
@@ -109,15 +121,19 @@ class SquareRoutine : public rclcpp::Node
 			switch(count_) 
 			{
 			  case 0:
+			  	rotate_90();
 			    move_distance(1.0);
 			    break;
 			  case 1:
+			  	rotate_90();
 			    move_distance(1.0);
 			    break;
 			  case 2:
+			  	rotate_90();
 			    move_distance(1.0);
 			    break;
 			  case 3:
+			  	rotate_90();
 			    move_distance(1.0);
 			    break; 
 			  default:
@@ -150,7 +166,7 @@ class SquareRoutine : public rclcpp::Node
 	
 	// Declaration of Class Variables
 	double x_vel = 0.2;
-	double theta_vel = 0.2;
+	double theta_vel = 0.5;
 	double x_now = 0, x_init = 0, y_now = 0, y_init = 0;
 	double theta_now = 0, theta_target = 0;
 	double d_now = 0, d_aim = 0;
