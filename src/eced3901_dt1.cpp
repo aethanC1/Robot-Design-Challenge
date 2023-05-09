@@ -173,7 +173,7 @@ class SquareRoutine : public rclcpp::Node
 	
 	// Declaration of Class Variables
 	double x_vel = 0.2;
-	double theta_vel = 0.2;
+	double theta_vel = 0.5;
 	double x_now = 0, x_init = 0, y_now = 0, y_init = 0;
 	double theta_now = 0, theta_min = 0, theta_max = 0.1;
 	double d_now = 0, d_aim = 0;
