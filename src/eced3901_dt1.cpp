@@ -75,12 +75,12 @@ class SquareRoutine : public rclcpp::Node
 		d_now =	pow( pow(x_now - x_init, 2) + pow(y_now - y_init, 2), 0.5 );
 		
 		// Keep moving if not reached last distance target
-		if (theta_target > theta_now)
+		if (theta_now < 0)
 		{
-			cout << theta_target;
-			cout << ':';
-			cout << theta_now;
-			cout << '\n';
+			theta_now = 6.28318 + theta_now;
+		}
+		if ((theta_now < theta_min) && (theta_now > theta_max))
+		{
 			msg.angular.x = 0;
 			msg.angular.z = theta_vel;
 			publisher_->publish(msg);
@@ -88,14 +88,15 @@ class SquareRoutine : public rclcpp::Node
 		
 		else if (d_now < d_aim)
 		{	
-
+			
 			msg.linear.x = x_vel;
 			msg.angular.z = 0;
 			publisher_->publish(msg);		
 		}
 		// If done step, stop
 		else
-		{
+		{	
+			cout << theta_now;
 			msg.linear.x = 0; //double(rand())/double(RAND_MAX); //fun
 			msg.angular.z = 0; //2*double(rand())/double(RAND_MAX) - 1; //fun
 			publisher_->publish(msg);
@@ -117,15 +118,23 @@ class SquareRoutine : public rclcpp::Node
 			switch(count_) 
 			{
 			  case 0:
+			  	theta_min = 0;
+				theta_max = 0.1;
 			    move_distance(1.0);
 			    break;
 			  case 1:
+			  	theta_min = 1.70;
+				theta_max = 1.80;
 			    move_distance(1.0);
 			    break;
 			  case 2:
+			  	theta_min = 3.1;
+				theta_max = 3.2;
 			    move_distance(1.0);
 			    break;
 			  case 3:
+			  	theta_min = 4.4;
+				theta_max = 4.6;
 			    move_distance(1.0);
 			    break; 
 			  default:
@@ -141,7 +150,6 @@ class SquareRoutine : public rclcpp::Node
 		d_aim = distance;
 		x_init = x_now;
 		y_init = y_now;
-		theta_target = theta_now + 1.57;
 		count_++;		// advance state counter
 		last_state_complete = 0;	
 	}
@@ -158,9 +166,9 @@ class SquareRoutine : public rclcpp::Node
 	
 	// Declaration of Class Variables
 	double x_vel = 0.2;
-	double theta_vel = 0.5;
+	double theta_vel = 0.2;
 	double x_now = 0, x_init = 0, y_now = 0, y_init = 0;
-	double theta_now = 0, theta_target = 0;
+	double theta_now = 0, theta_min = 0, theta_max = 0.1;
 	double d_now = 0, d_aim = 0;
 	size_t count_ = 0;
 	int last_state_complete = 1;
