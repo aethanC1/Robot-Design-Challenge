@@ -13,6 +13,7 @@ License: GNU GPLv3
 #include <memory>		// Dynamic memory management
 #include <string>		// String functions
 #include <cmath>
+#include <iostream>
 
 // ROS Client Library for C++
 #include "rclcpp/rclcpp.hpp"
@@ -26,6 +27,7 @@ License: GNU GPLv3
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2/LinearMath/Matrix3x3.h>
 
+using namespace std;
 using namespace std::chrono_literals;
 using std::placeholders::_1;
 
@@ -64,7 +66,7 @@ class SquareRoutine : public rclcpp::Node
 		tf2::Matrix3x3 m(q);
 		double roll, pitch, yaw;
 		m.getRPY(roll, pitch, yaw);
-		theta_now = yaw;
+		theta_now = m.getYaw();
 		//RCLCPP_INFO(this->get_logger(), "Odom Acquired.");
 	}
 	
@@ -104,9 +106,17 @@ class SquareRoutine : public rclcpp::Node
 	{	
 		geometry_msgs::msg::Twist msg;
 		double target = theta_now + 1.57;
+		cout << target;
+		double delay = 0;
 		
 		while (target > theta_now)
-		{
+		{	
+			delay ++;
+			if (delay == 500)
+			{
+				delay = 0;
+				cout << theta_now;
+			}
 			msg.angular.z = theta_vel;
 			publisher_->publish(msg);
 		}
