@@ -58,11 +58,7 @@ class SquareRoutine : public rclcpp::Node
 	{
 		x_now = msg->pose.pose.position.x;
 		y_now = msg->pose.pose.position.y;
-		quatx = msg->pose.pose.orientation.x;
-		quaty = msg->pose.pose.orientation.y;
-		quatz = msg->pose.pose.orientation.z;
-		quatw = msg->pose.pose.orientation.w;
-		tf2::Quaternion q(quatx, quaty, quatz, quatw);
+		tf2::Quaternion q(msg->pose.pose.orientation.x, msg->pose.pose.orientation.y, msg->pose.pose.orientation.z, msg->pose.pose.orientation.w);
 		tf2::Matrix3x3 m(q);
 		double roll, pitch, yaw;
 		m.getRPY(roll, pitch, yaw);
@@ -181,7 +177,6 @@ class SquareRoutine : public rclcpp::Node
 	double x_now = 0, x_init = 0, y_now = 0, y_init = 0;
 	double theta_now = 0, theta_target = 0;
 	double d_now = 0, d_aim = 0;
-	double quatx, quaty, quatz, quatw;
 	size_t count_ = 0;
 	int last_state_complete = 1;
 };
