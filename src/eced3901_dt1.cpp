@@ -98,24 +98,26 @@ class SquareRoutine : public rclcpp::Node
 			switch(count_) 
 			{
 			  case 0:
-			    move_distance(1.0);
-				y_vel = 0;
+			  	y_vel = 0.2;
 				x_vel = 0.2;
+			    move_distance(1.0);
 			    break;
 			  case 1:
-			    move_distance(1.0);
-				y_vel = 0.2;
+			  	y_vel = 0.2;
 				x_vel = 0;
+			    move_distance(1.0);
+				
 			    break;
 			  case 2:
-			    move_distance(1.0);
-				y_vel = 0;
+			  	y_vel = 0;
 				x_vel = -0.2;
+			    move_distance(1.0);
+				
 			    break;
 			  case 3:
-			    move_distance(1.0);
-				y_vel = -0.2;
+			  	y_vel = -0.2;
 				x_vel = 0;
+			    move_distance(1.0);
 			    break; 
 			  default:
 			    break;
