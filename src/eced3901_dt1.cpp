@@ -51,12 +51,20 @@ class SquareRoutine : public rclcpp::Node
 	}
 
   private:
+	
 	void topic_callback(const nav_msgs::msg::Odometry::SharedPtr msg)
 	{
 		x_now = msg->pose.pose.position.x;
 		y_now = msg->pose.pose.position.y;
-		theta_now = msg->pose.pose.orientation.getYaw();
-		
+		quatx = msg->pose.pose.orientation.x;
+		quaty = msg->pose.pose.orientation.y;
+		quatz = msg->pose.pose.orientation.z;
+		quatw = msg->pose.pose.orientation.w;
+		tf2::LinearMath::Quaternion q(quatx, quaty, quatz, quatw);
+		tf2::LinearMath::Matrix3x3 m(q);
+		double roll, pitch, yaw;
+		m.getRPY(roll, pitch, yaw);
+		theta_now = yaw;
 		//RCLCPP_INFO(this->get_logger(), "Odom Acquired.");
 	}
 	
@@ -130,7 +138,7 @@ class SquareRoutine : public rclcpp::Node
 		d_aim = distance;
 		x_init = x_now;
 		y_init = y_now;
-		theta_target = theta_now + 1.57
+		theta_target = theta_now + 1.57;
 		count_++;		// advance state counter
 		last_state_complete = 0;	
 	}
@@ -151,6 +159,7 @@ class SquareRoutine : public rclcpp::Node
 	double x_now = 0, x_init = 0, y_now = 0, y_init = 0;
 	double theta_now = 0, theta_target = 0;
 	double d_now = 0, d_aim = 0;
+	double quatx, quaty, quatz, quatw;
 	size_t count_ = 0;
 	int last_state_complete = 1;
 };
