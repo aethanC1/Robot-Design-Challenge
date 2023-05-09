@@ -75,8 +75,15 @@ class SquareRoutine : public rclcpp::Node
 		d_now =	pow( pow(x_now - x_init, 2) + pow(y_now - y_init, 2), 0.5 );
 		
 		// Keep moving if not reached last distance target
+		if (theta_target > theta_now)
+		{
+			cout << theta_target << ' :: ' << theta_now;
+			msg.angular.x = 0;
+			msg.angular.z = theta_vel;
+			publisher_->publish(msg);
+		}
 		
-		if (d_now < d_aim)
+		else if (d_now < d_aim)
 		{	
 
 			msg.linear.x = x_vel;
@@ -98,29 +105,7 @@ class SquareRoutine : public rclcpp::Node
 
 		//RCLCPP_INFO(this->get_logger(), "Published cmd_vel.");
 	}
-	void rotate_90()
-	{	
-		geometry_msgs::msg::Twist msg;
-		double target = theta_now + 1.57;
-		cout << target;
-		double delay = 0;
-		
-		while (target > theta_now)
-		{	
-			delay ++;
-			if (delay == 1000)
-			{
-				delay = 0;
-				cout << theta_now;
-				cout << '\n';
 
-			}
-			msg.angular.z = theta_vel;
-			publisher_->publish(msg);
-		}
-
-	}
-	
 	void sequence_statemachine()
 	{	
 		geometry_msgs::msg::Twist msg;
@@ -132,7 +117,6 @@ class SquareRoutine : public rclcpp::Node
 			    move_distance(1.0);
 			    break;
 			  case 1:
-			  	rotate_90();
 			    move_distance(1.0);
 			    break;
 			  case 2:
@@ -156,7 +140,7 @@ class SquareRoutine : public rclcpp::Node
 		d_aim = distance;
 		x_init = x_now;
 		y_init = y_now;
-		//theta_target = theta_now + 1.57;
+		theta_target = theta_now + 1.57;
 		count_++;		// advance state counter
 		last_state_complete = 0;	
 	}
