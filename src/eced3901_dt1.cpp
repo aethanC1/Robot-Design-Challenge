@@ -120,11 +120,9 @@ class SquareRoutine : public rclcpp::Node
 			    move_distance(1.0);
 			    break;
 			  case 2:
-			  	rotate_90();
 			    move_distance(1.0);
 			    break;
 			  case 3:
-			  	rotate_90();
 			    move_distance(1.0);
 			    break; 
 			  default:
