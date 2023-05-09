@@ -60,8 +60,8 @@ class SquareRoutine : public rclcpp::Node
 		quaty = msg->pose.pose.orientation.y;
 		quatz = msg->pose.pose.orientation.z;
 		quatw = msg->pose.pose.orientation.w;
-		tf2::LinearMath::Quaternion q(quatx, quaty, quatz, quatw);
-		tf2::LinearMath::Matrix3x3 m(q);
+		tf2::Quaternion q(quatx, quaty, quatz, quatw);
+		tf2::Matrix3x3 m(q);
 		double roll, pitch, yaw;
 		m.getRPY(roll, pitch, yaw);
 		theta_now = yaw;
