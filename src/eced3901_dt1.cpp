@@ -91,7 +91,8 @@ class SquareRoutine : public rclcpp::Node
 	}
 	
 	void sequence_statemachine()
-	{
+	{	
+		geometry_msgs::msg::Twist msg;
 		if (last_state_complete == 1)
 		{
 			switch(count_) 
