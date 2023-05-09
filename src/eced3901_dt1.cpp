@@ -75,7 +75,8 @@ class SquareRoutine : public rclcpp::Node
 		d_now =	pow( pow(x_now - x_init, 2) + pow(y_now - y_init, 2), 0.5 );
 		
 		// Keep moving if not reached last distance target
-		if (abs(theta_target - theta_now) < 0.05)
+		double temp_target = theta_target
+		if (abs(temp_target - theta_now) < 0.05)
 		{
 			cout << theta_target;
 			cout << ':';
