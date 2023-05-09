@@ -49,7 +49,7 @@ class SquareRoutine : public rclcpp::Node
 		publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel",10);
       
 	  	// Create the timer
-	  	timer_ = this->create_wall_timer(100ms, std::bind(&SquareRoutine::timer_callback, this)); 	  
+	  	timer_ = this->create_wall_timer(50ms, std::bind(&SquareRoutine::timer_callback, this)); 	  
 	}
 
   private:
@@ -126,22 +126,22 @@ class SquareRoutine : public rclcpp::Node
 			{
 			  case 0:
 			  	theta_min = 0;
-				theta_max = 0.1;
+				theta_max = 0.025;
 			    move_distance(1.0);
 			    break;
 			  case 1:
-			  	theta_min = 1.70;
-				theta_max = 1.80;
+			  	theta_min = 1.725;
+				theta_max = 1.775;
 			    move_distance(1.0);
 			    break;
 			  case 2:
-			  	theta_min = 3.1;
-				theta_max = 3.2;
+			  	theta_min = 3.115;
+				theta_max = 3.165;
 			    move_distance(1.0);
 			    break;
 			  case 3:
-			  	theta_min = 4.4;
-				theta_max = 4.6;
+			  	theta_min = 4.510;
+				theta_max = 4.560;
 			    move_distance(1.0);
 			    break; 
 			  default:
