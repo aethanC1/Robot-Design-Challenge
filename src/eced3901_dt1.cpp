@@ -130,8 +130,8 @@ class SquareRoutine : public rclcpp::Node
 			    move_distance(1.0);
 			    break;
 			  case 1:
-			  	theta_min = 1.725;
-				theta_max = 1.775;
+			  	theta_min = 1.545;
+				theta_max = 1.595;
 			    move_distance(1.0);
 			    break;
 			  case 2:
