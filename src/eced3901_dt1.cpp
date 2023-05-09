@@ -68,8 +68,10 @@ class SquareRoutine : public rclcpp::Node
 		
 		// Keep moving if not reached last distance target
 		if (d_now < d_aim)
-		{
-			msg.linear.x = x_vel; 
+		{	
+
+			msg.linear.x = x_vel;
+			msg.linear.y = y_vel;
 			msg.angular.z = 0;
 			publisher_->publish(msg);		
 		}
@@ -77,7 +79,7 @@ class SquareRoutine : public rclcpp::Node
 		else
 		{
 			msg.linear.x = 0; //double(rand())/double(RAND_MAX); //fun
-			msg.angular.z = 0; //2*double(rand())/double(RAND_MAX) - 1; //fun
+			msg.angular.z = -1.57; //2*double(rand())/double(RAND_MAX) - 1; //fun
 			publisher_->publish(msg);
 			last_state_complete = 1;
 		}
@@ -97,15 +99,23 @@ class SquareRoutine : public rclcpp::Node
 			{
 			  case 0:
 			    move_distance(1.0);
+				y_vel = -0.2;
+				x_vel = 0;
 			    break;
 			  case 1:
 			    move_distance(1.0);
+				y_vel = 0;
+				x_vel = 0.2;
 			    break;
 			  case 2:
 			    move_distance(1.0);
+				y_vel = 0.2;
+				x_vel = 0;
 			    break;
 			  case 3:
 			    move_distance(1.0);
+				y_vel = 0;
+				x_vel = -0.2;
 			    break; 
 			  default:
 			    break;
@@ -135,6 +145,7 @@ class SquareRoutine : public rclcpp::Node
 	
 	// Declaration of Class Variables
 	double x_vel = 0.2;
+	double y_vel = 0.2;
 	double x_now = 0, x_init = 0, y_now = 0, y_init = 0;
 	double d_now = 0, d_aim = 0;
 	size_t count_ = 0;
