@@ -66,10 +66,10 @@ class SquareRoutine : public rclcpp::Node
 		m.getRPY(roll, pitch, yaw);
 		theta_now = yaw;
 		//RCLCPP_INFO(this->get_logger(), "Odom Acquired.");
-		std::cout yaw;
 	}
 	
 	void timer_callback()
+	
 	{
 		geometry_msgs::msg::Twist msg;
         	
@@ -77,19 +77,12 @@ class SquareRoutine : public rclcpp::Node
 		d_now =	pow( pow(x_now - x_init, 2) + pow(y_now - y_init, 2), 0.5 );
 		
 		// Keep moving if not reached last distance target
-		if (abs(theta_target - theta_now)< 0.05)
-		{	
-			std::cout theta_target;
-			msg.linear.x = 0;
-			msg.angular.z = theta_vel;
-			publisher_->publish(msg);
-		}
-
-		else if (d_now < d_aim)
+		
+		if (d_now < d_aim)
 		{	
 
 			msg.linear.x = x_vel;
-			msg.angular.z = 0;
+			msg.angular.z = theta_vel;
 			publisher_->publish(msg);		
 		}
 		// If done step, stop
@@ -140,7 +133,7 @@ class SquareRoutine : public rclcpp::Node
 		d_aim = distance;
 		x_init = x_now;
 		y_init = y_now;
-		theta_target = theta_now + 1.57;
+		//theta_target = theta_now + 1.57;
 		count_++;		// advance state counter
 		last_state_complete = 0;	
 	}
