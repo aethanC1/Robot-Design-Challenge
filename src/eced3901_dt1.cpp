@@ -79,13 +79,19 @@ class SquareRoutine : public rclcpp::Node
 		{
 			theta_now = 6.28318 + theta_now;
 		}
-		if ((theta_now < theta_min) || (theta_now > theta_max))
+		if (theta_now < theta_min)
 		{
 			msg.linear.x = 0;
 			msg.angular.z = theta_vel;
 			publisher_->publish(msg);
 		}
 		
+		else if (theta_now > theta_max)
+		{
+			msg.linear.x = 0;
+			msg.angular.z = -theta_vel;
+			publisher_->publish(msg);
+		}
 		else if (d_now < d_aim)
 		{	
 			
