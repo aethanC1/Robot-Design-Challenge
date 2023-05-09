@@ -71,7 +71,6 @@ class SquareRoutine : public rclcpp::Node
 		{	
 
 			msg.linear.x = x_vel;
-			msg.linear.y = y_vel;
 			msg.angular.z = 0;
 			publisher_->publish(msg);		
 		}
@@ -98,25 +97,23 @@ class SquareRoutine : public rclcpp::Node
 			switch(count_) 
 			{
 			  case 0:
-			  	y_vel = 0.2;
-				x_vel = 0.2;
+			  	msg.angular.z = -1.57;
+			  	publisher_->publish(msg);
 			    move_distance(1.0);
 			    break;
 			  case 1:
-			  	y_vel = 0.2;
-				x_vel = 0;
+			  	msg.angular.z = -1.57;
+			  	publisher_->publish(msg);
 			    move_distance(1.0);
-				
 			    break;
 			  case 2:
-			  	y_vel = 0;
-				x_vel = -0.2;
+			  	msg.angular.z = -1.57;
+			  	publisher_->publish(msg);
 			    move_distance(1.0);
-				
 			    break;
 			  case 3:
-			  	y_vel = -0.2;
-				x_vel = 0;
+			  	msg.angular.z = -1.57;
+			  	publisher_->publish(msg);
 			    move_distance(1.0);
 			    break; 
 			  default:
