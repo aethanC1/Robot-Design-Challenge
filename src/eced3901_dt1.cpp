@@ -77,7 +77,8 @@ class SquareRoutine : public rclcpp::Node
 		// Keep moving if not reached last distance target
 		if (theta_target > theta_now)
 		{
-			cout << theta_target << ' :: ' << theta_now;
+			cout << theta_target + ':' + theta_now;
+			cout << '\n';
 			msg.angular.x = 0;
 			msg.angular.z = theta_vel;
 			publisher_->publish(msg);
