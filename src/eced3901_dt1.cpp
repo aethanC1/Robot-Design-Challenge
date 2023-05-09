@@ -55,7 +55,7 @@ class SquareRoutine : public rclcpp::Node
 	{
 		x_now = msg->pose.pose.position.x;
 		y_now = msg->pose.pose.position.y;
-		theta_now = tf2::getYaw(msg->pose.pose.orientation);
+		theta_now = msg->pose.pose.orientation.getYaw();
 		
 		//RCLCPP_INFO(this->get_logger(), "Odom Acquired.");
 	}
