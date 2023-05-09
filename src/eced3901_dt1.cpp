@@ -66,7 +66,7 @@ class SquareRoutine : public rclcpp::Node
 		tf2::Matrix3x3 m(q);
 		double roll, pitch, yaw;
 		m.getRPY(roll, pitch, yaw);
-		theta_now = m.getYaw();
+		theta_now = yaw;
 		//RCLCPP_INFO(this->get_logger(), "Odom Acquired.");
 	}
 	
