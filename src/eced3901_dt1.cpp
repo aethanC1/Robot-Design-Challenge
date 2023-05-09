@@ -79,14 +79,14 @@ class SquareRoutine : public rclcpp::Node
 		{
 			theta_now = 6.28318 + theta_now;
 		}
-		if (theta_now < (theta_target*0.95))
+		if (theta_now < (theta_target - 0.05))
 		{
 			msg.linear.x = 0;
 			msg.angular.z = theta_vel;
 			publisher_->publish(msg);
 		}
 		
-		else if (theta_now > (theta_target*1.05))
+		else if (theta_now > (theta_target + 0.05))
 		{
 			msg.linear.x = 0;
 			msg.angular.z = -theta_vel;
