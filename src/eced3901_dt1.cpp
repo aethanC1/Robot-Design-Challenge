@@ -112,10 +112,12 @@ class SquareRoutine : public rclcpp::Node
 		while (target > theta_now)
 		{	
 			delay ++;
-			if (delay == 500)
+			if (delay == 1000)
 			{
 				delay = 0;
 				cout << theta_now;
+				cout << '\n';
+
 			}
 			msg.angular.z = theta_vel;
 			publisher_->publish(msg);
@@ -131,7 +133,6 @@ class SquareRoutine : public rclcpp::Node
 			switch(count_) 
 			{
 			  case 0:
-			  	rotate_90();
 			    move_distance(1.0);
 			    break;
 			  case 1:
