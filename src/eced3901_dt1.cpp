@@ -81,7 +81,7 @@ class SquareRoutine : public rclcpp::Node
 		// Keep moving if not reached last distance target
 		if (theta_now < 0)
 		{
-			theta_now = 6.28318 - theta_now
+			theta_now = 6.28318 - theta_now;
 		}
 		
 		float remaining_angle = theta_target - total_theta;
@@ -137,12 +137,12 @@ class SquareRoutine : public rclcpp::Node
 			{
 			  case 0:
 			  	heading = 0;
-			  	theta_target = 1.45;
+			  	theta_target = 1.40;
 			    move_distance(1.0);
 			    break;
 			  case 1:
 			  	heading = 1.57;
-			  	theta_target = 1.4;
+			  	theta_target = 1.40;
 			    move_distance(1.0);
 			    break;
 			  case 2:
@@ -152,6 +152,7 @@ class SquareRoutine : public rclcpp::Node
 			    break;
 			  case 3:
 			  	heading = 4.71;
+				theta_target = 1.40
 			    move_distance(1.0);
 			    break; 
 			  default:
