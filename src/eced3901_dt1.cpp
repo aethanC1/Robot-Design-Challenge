@@ -79,6 +79,10 @@ class SquareRoutine : public rclcpp::Node
 		d_now =	pow( pow(x_now - x_init, 2) + pow(y_now - y_init, 2), 0.5 );
 		
 		// Keep moving if not reached last distance target
+		if (theta_now < 0)
+		{
+			theta_now = 6.28318 - theta_now
+		}
 		
 		float remaining_angle = theta_target - total_theta;
 		if (remaining_angle > 0)
@@ -88,17 +92,22 @@ class SquareRoutine : public rclcpp::Node
 			publisher_->publish(msg);
 		}
 		
-		//else if (theta_now > (theta_target + 0.05))
-		//{
-		//	msg.linear.x = 0;
-		//	msg.angular.z = -theta_vel;
-		//	publisher_->publish(msg);
-		//}
 		else if (d_now < d_aim)
 		{	
-			
+			if (theta_now < heading)
+			{
+				heading_correction = 0.1;
+				}
+			else if (theta_now < heading)
+			{
+				heading_correction = -0.1;
+				}
+			else
+			{
+				heading_correction = 0;
+				}
 			msg.linear.x = x_vel;
-			msg.angular.z = 0;
+			msg.angular.z = heading_correction;
 			publisher_->publish(msg);		
 		}
 		// If done step, stop
@@ -127,19 +136,22 @@ class SquareRoutine : public rclcpp::Node
 			switch(count_) 
 			{
 			  case 0:
+			  	heading = 0;
 			  	theta_target = 1.45;
 			    move_distance(1.0);
 			    break;
 			  case 1:
-			  	theta_target = 1.45;
+			  	heading = 1.57;
+			  	theta_target = 1.4;
 			    move_distance(1.0);
 			    break;
 			  case 2:
-			  	theta_target = 1.45;
+			  	heading = 3.14;
+			  	theta_target = 1.40;
 			    move_distance(1.0);
 			    break;
 			  case 3:
-			  	theta_target = 1.45;
+			  	heading = 4.71;
 			    move_distance(1.0);
 			    break; 
 			  default:
@@ -177,6 +189,7 @@ class SquareRoutine : public rclcpp::Node
 	double theta_now = 0, theta_target = 0;
 	double total_theta = 0, delta_theta = 0, last_theta = 0;
 	double d_now = 0, d_aim = 0;
+	double heading = 0, heading_correction = 0;
 	size_t count_ = 0;
 	int last_state_complete = 1;
 };
