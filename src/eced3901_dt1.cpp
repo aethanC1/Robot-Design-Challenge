@@ -63,7 +63,7 @@ class SquareRoutine : public rclcpp::Node
 		double roll, pitch, yaw;
 		m.getRPY(roll, pitch, yaw);
 		theta_now = yaw;
-		delta_theta = fabs(theta_now - last_theta);
+		delta_theta = fabs(fabs(theta_now) - fabs(last_theta));
 		total_theta += delta_theta;
 		last_theta = theta_now;
 		
@@ -82,11 +82,19 @@ class SquareRoutine : public rclcpp::Node
 		// Keep moving if not reached last distance target
 		if (theta_now < 0)
 		{
-			current_heading = 6.28318 - theta_now;
+			current_heading = 6.28318 + theta_now;
+			if (count_ == 4)
+			{
+			    heading = 6.28;
+			    }
 		}
 		else
 		{
 			current_heading = theta_now;
+			if (count_ == 4)
+			{
+			    heading = 0;
+			    }
 		}
 		
 		float remaining_angle = theta_target - total_theta;
@@ -101,11 +109,11 @@ class SquareRoutine : public rclcpp::Node
 		{	
 			if (current_heading < heading)
 			{
-				heading_correction = 0.1;
+				heading_correction = 0.05;
 				}
-			else if (current_heading < heading)
+			else if (current_heading > heading)
 			{
-				heading_correction = -0.1;
+				heading_correction = -0.05;
 				}
 			else
 			{
@@ -118,8 +126,6 @@ class SquareRoutine : public rclcpp::Node
 		// If done step, stop
 		else
 		{	
-			cout << theta_now;
-			cout << '\n';
 			msg.linear.x = 0; //double(rand())/double(RAND_MAX); //fun
 			msg.angular.z = 0; //2*double(rand())/double(RAND_MAX) - 1; //fun
 			publisher_->publish(msg);
@@ -141,23 +147,23 @@ class SquareRoutine : public rclcpp::Node
 			switch(count_) 
 			{
 			  case 0:
-			  	heading = 0;
-			  	theta_target = 1.40;
+			  	heading = 1.57;
+			  	theta_target = 1.35;
 			    move_distance(1.0);
 			    break;
 			  case 1:
-			  	heading = 1.57;
-			  	theta_target = 1.40;
+			  	heading = 3.14;
+			  	theta_target = 1.35;
 			    move_distance(1.0);
 			    break;
 			  case 2:
-			  	heading = 3.14;
-			  	theta_target = 1.40;
+			  	heading = 4.71;
+			  	theta_target = 1.35;
 			    move_distance(1.0);
 			    break;
 			  case 3:
-			  	heading = 4.71;
-				theta_target = 1.40;
+			  	heading = 0;
+				theta_target = 1.35;
 			    move_distance(1.0);
 			    break; 
 			  default:
