@@ -127,19 +127,19 @@ class SquareRoutine : public rclcpp::Node
 			switch(count_) 
 			{
 			  case 0:
-			  	theta_target = 1.40;
+			  	theta_target = 1.43;
 			    move_distance(1.0);
 			    break;
 			  case 1:
-			  	theta_target = 1.40;
+			  	theta_target = 1.43;
 			    move_distance(1.0);
 			    break;
 			  case 2:
-			  	theta_target = 1.40;
+			  	theta_target = 1.43;
 			    move_distance(1.0);
 			    break;
 			  case 3:
-			  	theta_target = 1.40;
+			  	theta_target = 1.43;
 			    move_distance(1.0);
 			    break; 
 			  default:
