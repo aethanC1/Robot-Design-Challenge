@@ -148,22 +148,22 @@ class SquareRoutine : public rclcpp::Node
 			{
 			  case 0:
 			  	heading = 1.57;
-			  	theta_target = 1.35;
+			  	theta_target = 1.5;
 			    move_distance(1.0);
 			    break;
 			  case 1:
 			  	heading = 3.14;
-			  	theta_target = 1.35;
+			  	theta_target = 1.5;
 			    move_distance(1.0);
 			    break;
 			  case 2:
 			  	heading = 4.71;
-			  	theta_target = 1.35;
+			  	theta_target = 1.5;
 			    move_distance(1.0);
 			    break;
 			  case 3:
 			  	heading = 0;
-				theta_target = 1.35;
+				theta_target = 1.5;
 			    move_distance(1.0);
 			    break; 
 			  default:
@@ -196,7 +196,7 @@ class SquareRoutine : public rclcpp::Node
 	
 	// Declaration of Class Variables
 	double x_vel = 0.2;
-	double theta_vel = 0.5;
+	double theta_vel = 0.25;
 	double x_now = 0, x_init = 0, y_now = 0, y_init = 0;
 	double theta_now = 0, theta_target = 0;
 	double total_theta = 0, delta_theta = 0, last_theta = 0;
