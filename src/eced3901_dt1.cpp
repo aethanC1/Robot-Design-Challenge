@@ -77,15 +77,16 @@ class SquareRoutine : public rclcpp::Node
         	
 		// Calculate distance travelled from initial
 		d_now =	pow( pow(x_now - x_init, 2) + pow(y_now - y_init, 2), 0.5 );
+		float current_heading;
 		
 		// Keep moving if not reached last distance target
 		if (theta_now < 0)
 		{
-			float current_heading = 6.28318 - theta_now;
+			current_heading = 6.28318 - theta_now;
 		}
 		else
 		{
-			float current_heading = theta_now;
+			current_heading = theta_now;
 		}
 		
 		float remaining_angle = theta_target - total_theta;
@@ -98,11 +99,11 @@ class SquareRoutine : public rclcpp::Node
 		
 		else if (d_now < d_aim)
 		{	
-			if (theta_now < heading)
+			if (current_heading < heading)
 			{
 				heading_correction = 0.1;
 				}
-			else if (theta_now < heading)
+			else if (current_heading < heading)
 			{
 				heading_correction = -0.1;
 				}
