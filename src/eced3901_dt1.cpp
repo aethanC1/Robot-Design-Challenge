@@ -95,17 +95,19 @@ class SquareRoutine : public rclcpp::Node
 		
 		else if (d_now < d_aim)
 		{	
-			if (current_heading < heading)
-			{
-				heading_correction = 0.05;
-				}
-			else if (current_heading > heading)
-			{
-				heading_correction = -0.05;
-				}
-			else
-			{
-				heading_correction = 0;
+			if (!first_move){
+				if (current_heading < heading)
+				{
+					heading_correction = 0.05;
+					}
+				else if (current_heading > heading)
+				{
+					heading_correction = -0.05;
+					}
+				else
+				{
+					heading_correction = 0;
+					}
 				}
 			msg.linear.x = x_vel;
 			msg.angular.z = heading_correction;
@@ -163,8 +165,19 @@ class SquareRoutine : public rclcpp::Node
 		count_++;		// advance state counter
 		last_state_complete = 0;
 		total_theta = 0;
+		if (first_move) 
+		{
+		heading = theta_now;
+		cout << heading;
+		theta_target = 0;
+		first_move = false;
+			}
+		else{
+		theta_target = 1.55;
 		heading = theta_now + 1.57;
+			}
 		if (heading > 6.28)
+		
 		{
 			heading -= 6.28;	
 			}	
@@ -189,6 +202,7 @@ class SquareRoutine : public rclcpp::Node
 	double d_now = 0, d_aim = 0;
 	double heading = 0, heading_correction = 0;
 	size_t count_ = 0;
+	bool first_move = true;
 	int last_state_complete = 1;
 };
     	

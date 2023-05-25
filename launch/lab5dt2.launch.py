@@ -121,7 +121,7 @@ def generate_launch_description():
   
   start_square_movement = Node(
     executable = 'dt1',
-    package ='dt1',
+    package ='eced3901'
     
   )
 
