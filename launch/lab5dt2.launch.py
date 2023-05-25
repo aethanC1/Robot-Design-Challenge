@@ -117,7 +117,13 @@ def generate_launch_description():
     executable='rviz2',
     name='rviz2',
     output='screen',
-    arguments=['-d', rviz_config_file])    
+    arguments=['-d', rviz_config_file])
+  
+  start_square_movement = Node(
+    executable = 'dt1',
+    package ='dt1',
+    
+  )
 
   # Launch the ROS 2 Navigation Stack
   start_ros2_navigation_cmd = IncludeLaunchDescription(
@@ -146,11 +152,13 @@ def generate_launch_description():
   ld.add_action(declare_slam_cmd)
   ld.add_action(declare_use_rviz_cmd) 
   ld.add_action(declare_use_sim_time_cmd)
+  
 
 
   # Add any actions
   ld.add_action(start_rviz_cmd)
   ld.add_action(start_ros2_navigation_cmd)
+  ld.add_action(start_square_movement)
 
   return ld
 
