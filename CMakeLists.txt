@@ -18,6 +18,9 @@ find_package(tf2 REQUIRED)
 
 
 # Create Cpp executable
+add_executable(yaw src/get_current_heading.cpp)
+ament_target_dependencies(yaw rclcpp std_msgs nav_msgs geometry_msgs tf2)
+
 add_executable(talker src/publisher_member_function.cpp)
 ament_target_dependencies(talker rclcpp std_msgs)
 
@@ -27,6 +30,7 @@ ament_target_dependencies(dt1 rclcpp std_msgs nav_msgs geometry_msgs tf2)
 
 # Install Cpp executables
 install(TARGETS
+  yaw
   talker
   dt1
   DESTINATION lib/${PROJECT_NAME})
