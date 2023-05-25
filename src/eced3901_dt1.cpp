@@ -23,6 +23,7 @@ License: GNU GPLv3
 #include "geometry_msgs/msg/pose.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include "nav_msgs/msg/odometry.hpp"
+#include "example_interfaces/msg/bool.hpp"
 
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2/LinearMath/Matrix3x3.h>
@@ -47,6 +48,8 @@ class SquareRoutine : public rclcpp::Node
 		// Create the publisher
 		// Publisher to a topic named "topic". The size of the queue is 10 messages.
 		publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel",10);
+
+		finish_publisher_ = this->create_publisher<example_interfaces::msg::bool>("finished_square",10);
       
 	  	// Create the timer
 	  	timer_ = this->create_wall_timer(100ms, std::bind(&SquareRoutine::timer_callback, this)); 	  
@@ -149,8 +152,13 @@ class SquareRoutine : public rclcpp::Node
 			  case 3:
 			    move_distance(.95);
 			    break; 
-			  default:
+	
+			  case 4:
+				system("ros2 run nav2_map_server map_saver_cli -f finished_map");
+				count_++
 			    break;
+			  default:
+			  	break;
 			}
 		}			
 	}
@@ -189,6 +197,7 @@ class SquareRoutine : public rclcpp::Node
          
 	// Declaration of publisher_ attribute      
 	rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;
+	rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr finish_publisher_;
 	
 	// Declaration of the timer_ attribute
 	rclcpp::TimerBase::SharedPtr timer_;
