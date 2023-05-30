@@ -70,7 +70,7 @@ class SquareRoutine : public rclcpp::Node
 	
 	{
 		cout << "\nCurrent Heading: ";
-		cout << theta_now		
+		cout << theta_now;		
 	}
 
 	// Declaration of subscription_ attribute

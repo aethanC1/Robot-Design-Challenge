@@ -6,7 +6,7 @@
 
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
 from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, LaunchConfiguration, PythonExpression
@@ -64,7 +64,7 @@ def generate_launch_description():
         
   declare_autostart_cmd = DeclareLaunchArgument(
     name='autostart', 
-    default_value='true',
+    default_value='True',
     description='Automatically startup the nav2 stack')
 
   declare_bt_xml_cmd = DeclareLaunchArgument(
@@ -104,7 +104,7 @@ def generate_launch_description():
     
   declare_use_sim_time_cmd = DeclareLaunchArgument(
     name='use_sim_time',
-    default_value='True',
+    default_value= 'false',
     description='Use simulation (Gazebo) clock if true')
 
    
@@ -124,6 +124,8 @@ def generate_launch_description():
     package ='eced3901'
     
   )
+  
+  start_square_movement_delay = TimerAction(period=15.0, actions=[start_square_movement])
 
   # Launch the ROS 2 Navigation Stack
   start_ros2_navigation_cmd = IncludeLaunchDescription(
@@ -158,7 +160,7 @@ def generate_launch_description():
   # Add any actions
   ld.add_action(start_rviz_cmd)
   ld.add_action(start_ros2_navigation_cmd)
-  ld.add_action(start_square_movement)
+  ld.add_action(start_square_movement_delay)
 
   return ld
 
