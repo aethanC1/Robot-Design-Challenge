@@ -155,7 +155,7 @@ class SquareRoutine : public rclcpp::Node
 			    break; 
 	
 			  case 4:
-			  
+			   //Saves the map after it has finished moving/rotating using command line prompt
 				system("ros2 run nav2_map_server map_saver_cli -f ros2_ws/src/eced3901/maps/finished_map");
 				count_++;
 			    break;

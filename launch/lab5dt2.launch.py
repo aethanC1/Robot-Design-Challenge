@@ -119,12 +119,13 @@ def generate_launch_description():
     output='screen',
     arguments=['-d', rviz_config_file])
   
+  #Starts the dt1 node
   start_square_movement = Node(
     executable = 'dt1',
     package ='eced3901'
     
   )
-  
+  #Delays the dt1 node from starting by 15 seconds
   start_square_movement_delay = TimerAction(period=15.0, actions=[start_square_movement])
 
   # Launch the ROS 2 Navigation Stack
