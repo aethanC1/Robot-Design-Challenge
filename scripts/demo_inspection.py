@@ -15,8 +15,9 @@
 
 from copy import deepcopy
 
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped, Quaternion
 from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult
+import math
 import rclpy
 
 """
@@ -25,8 +26,49 @@ is that there are cameras or RFID sensors mounted on the robots
 collecting information about stock quantity and location.
 """
 
+def euler_from_quaternion(x, y, z, w):
+        """
+        Convert a quaternion into euler angles (roll, pitch, yaw)
+        roll is rotation around x in radians (counterclockwise)
+        pitch is rotation around y in radians (counterclockwise)
+        yaw is rotation around z in radians (counterclockwise)
+        """
+        t0 = 2.0 * (w * x + y * z)
+        t1 = 1.0 - 2.0 * (x * x + y * y)
+        roll_x = math.atan2(t0, t1)
+     
+        t2 = +2.0 * (w * y - z * x)
+        t2 = +1.0 if t2 > +1.0 else t2
+        t2 = -1.0 if t2 < -1.0 else t2
+        pitch_y = math.asin(t2)
+     
+        t3 = +2.0 * (w * z + x * y)
+        t4 = +1.0 - 2.0 * (y * y + z * z)
+        yaw_z = math.atan2(t3, t4)
+     
+        return roll_x, pitch_y, yaw_z # in radians
+        
+def quaternion_from_euler(roll, pitch, yaw):
+	"""
+	Convert euler angles back into a quaternion to be
+	used for orientation
+	"""
+	cos_y = math.cos(yaw * 0.5)
+	sin_y = math.sin(yaw * 0.5)
+	cos_p = math.cos(pitch * 0.5)
+	sin_p = math.sin(pitch * 0.5)
+	cos_r = math.cos(roll * 0.5)
+	sin_r = math.sin(roll * 0.5)
+
+	w = cos_r * cos_p * cos_y + sin_r * sin_p * sin_y
+	x = sin_r * cos_p * cos_y - cos_r * sin_p * sin_y
+	y = cos_r * sin_p * cos_y + sin_r * cos_p * sin_y
+	z = cos_r * cos_p * sin_y - sin_r * sin_p * cos_y
+
+	return [x, y, z, w]
 
 def main():
+    print('Started demo inspection')
     rclpy.init()
 
     navigator = BasicNavigator()
@@ -34,23 +76,20 @@ def main():
     # Inspection route, probably read in from a file for a real application
     # from either a map or drive and repeat.
     inspection_route = [
-        [3.461, -0.450],
-        [5.531, -0.450],
-        [3.461, -2.200],
-        [5.531, -2.200],
-        [3.661, -4.121],
-        [5.431, -4.121],
-        [3.661, -5.850],
-        [5.431, -5.800]]
+        [1.0, 0.0],
+        [1.0, 1.0],
+        [0.0, 1.0],
+        [0.0, 0.0]
+        ]
 
     # Set our demo's initial pose
     initial_pose = PoseStamped()
     initial_pose.header.frame_id = 'map'
     initial_pose.header.stamp = navigator.get_clock().now().to_msg()
-    initial_pose.pose.position.x = 3.45
-    initial_pose.pose.position.y = 2.15
-    initial_pose.pose.orientation.z = 1.0
-    initial_pose.pose.orientation.w = 0.0
+    initial_pose.pose.position.x = 0.0
+    initial_pose.pose.position.y = 0.0
+    initial_pose.pose.orientation.z = 0.0
+    initial_pose.pose.orientation.w = 1.0
     navigator.setInitialPose(initial_pose)
 
     # Wait for navigation to fully activate
@@ -61,12 +100,13 @@ def main():
     inspection_pose = PoseStamped()
     inspection_pose.header.frame_id = 'map'
     inspection_pose.header.stamp = navigator.get_clock().now().to_msg()
-    inspection_pose.pose.orientation.z = 1.0
-    inspection_pose.pose.orientation.w = 0.0
+    inspection_pose.pose.orientation.z = 0.0
+    inspection_pose.pose.orientation.w = 1.0
     for pt in inspection_route:
         inspection_pose.pose.position.x = pt[0]
         inspection_pose.pose.position.y = pt[1]
         inspection_points.append(deepcopy(inspection_pose))
+        print('inspection points loaded')
     navigator.followWaypoints(inspection_points)
 
     # Do something during our route (e.x. AI to analyze stock information or upload to the cloud)
