@@ -76,11 +76,10 @@ def main():
     # Inspection route, probably read in from a file for a real application
     # from either a map or drive and repeat.
     inspection_route = [
-        [0.0, 0.2],
-        [1.0, 0.2],
-        [1.0, 1.0],
-        [0.0, 1.0],
-        [0.0, 0.0]
+        [1.0, 0.0, 0],
+        [1.0, 1.0, 1.57],
+        [0.0, 1.0, 3.14],
+        [0.0, 0.0, -1.57]
         ]
 
     # Set our demo's initial pose
@@ -104,8 +103,17 @@ def main():
     #inspection_pose.pose.orientation.z = 0.0
     #inspection_pose.pose.orientation.w = 1.0
     for pt in inspection_route:
+        # Takes the euler angle for yaw and gets the quaternion
+        x, y, z, w = quaternion_from_euler(0, 0, pt[2])
+        # Specifies the x pose for the specific point
         inspection_pose.pose.position.x = pt[0]
+        # Specifies the y pose for the specific point
         inspection_pose.pose.position.y = pt[1]
+        # Specifies the orientation for the robot at the end
+        inspection_pose.pose.orientation.x = x
+        inspection_pose.pose.orientation.y = y
+        inspection_pose.pose.orientation.z = z
+        inspection_pose.pose.orientation.w = w
         inspection_points.append(deepcopy(inspection_pose))
         print('inspection points loaded')
     navigator.followWaypoints(inspection_points)
