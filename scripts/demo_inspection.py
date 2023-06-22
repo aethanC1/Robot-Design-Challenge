@@ -51,7 +51,7 @@ def euler_from_quaternion(x, y, z, w):
 def quaternion_from_euler(roll, pitch, yaw):
 	"""
 	Convert euler angles back into a quaternion to be
-	used for orientation
+	used for orientation in ros2
 	"""
 	cos_y = math.cos(yaw * 0.5)
 	sin_y = math.sin(yaw * 0.5)
@@ -75,6 +75,7 @@ def main():
 
     # Inspection route, probably read in from a file for a real application
     # from either a map or drive and repeat.
+    # 4 points for route, points are x, y, yaw respectively
     inspection_route = [
         [1.0, 0.0, 0],
         [1.0, 1.0, 1.57],
