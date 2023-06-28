@@ -137,7 +137,6 @@ class SquareRoutine : public rclcpp::Node
 		geometry_msgs::msg::Twist msg;
 		if (last_state_complete == 1)
 		//switch cases, reset movement distance, and set course heading robot should be moving in
-		//after all switch cases are complete saves the map via command line
 		{
 			switch(count_) 
 			{
@@ -156,7 +155,7 @@ class SquareRoutine : public rclcpp::Node
 			    break; 
 	
 			  case 4:
-			   //Saves the map after it has finished moving/rotating using command line prompt
+			  
 				system("ros2 run nav2_map_server map_saver_cli -f ros2_ws/src/eced3901/maps/finished_map");
 				count_++;
 			    break;
@@ -176,12 +175,10 @@ class SquareRoutine : public rclcpp::Node
 		count_++;		// advance state counter
 		last_state_complete = 0;
 		total_theta = 0;
-		//if it is first move dont use heading correction
 		if (first_move) 
 		{
 		heading = theta_now;
 		cout << heading;
-		//creates the heading that the robot will need to go to
 		theta_target = 0;
 			}
 		else{
