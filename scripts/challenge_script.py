@@ -67,6 +67,55 @@ def quaternion_from_euler(roll, pitch, yaw):
 
 	return [x, y, z, w]
 
+def navigate_to(navigator, route):
+
+    waypoints = []
+    pose = PoseStamped()
+    pose.header.frame_id = 'map'
+    pose.header.stamp = navigator.get_clock().now().to_msg()
+    for point in route:
+        x, y, z, w = quaternion_from_euler(0, 0, point[2])
+        pose.pose.position.x = point[0]
+        pose.pose.position.y = point[1]
+        pose.pose.orientation.x = x
+        pose.pose.orientation.y = y
+        pose.pose.orientation.z = z
+        pose.pose.orientation.w = w
+        waypoints.append(deepcopy(pose))
+    navigator.followWaypoints(waypoints)
+
+    i = 0
+    while not navigator.isTaskComplete():
+        i += 1
+        feedback = navigator.getFeedback()
+        if feedback and i % 5 == 0:
+            print('Executing current waypoint: ' +
+                  str(feedback.current_waypoint + 1) + '/' + str(len(waypoints)))
+
+    result = navigator.getResult()
+    if result == TaskResult.SUCCEEDED:
+        return True
+    elif result == TaskResult.CANCELED:
+        return False
+    elif result == TaskResult.FAILED:
+        return False
+    
+def recover_position(navigator, position):
+
+    last_valid_position = position[len(position) - 1]
+    pose = PoseStamped()
+    x, y, z, w = quaternion_from_euler(0, 0, last_valid_position[2])
+    pose.pose.position.x = last_valid_position[0]
+    pose.pose.position.y = last_valid_position[1]
+    pose.pose.orientation.x = x
+    pose.pose.orientation.y = y
+    pose.pose.orientation.z = z
+    pose.pose.orientation.w = w
+    pose.append(deepcopy(pose))
+    navigator.goToPose(pose)
+    while not navigator.isTaskComplete():
+        pass
+       
 def main():
  
     rclpy.init()
@@ -74,12 +123,16 @@ def main():
     navigator = BasicNavigator()
 
     #Points for route, points are x, y, yaw respectively
-    inspection_route = [
-        [1.0, 0.0, 0],
-        [1.0, 1.0, 1.57],
-        [0.0, 1.0, 3.14],
-        [0.0, 0.0, -1.57]
-        ]
+    point_1 = [[0, 1.3, 1.57]]
+    point_2 = [[0.5, 1.3, 0]]
+    point_3 = [[1, 1.3, 0]]
+    point_4 = [[1.3, 2.8, 1.57],
+               [3.0, 3.35, 1.57]]
+    point_5 = [[1.3, 2.8, 1.57],
+               [1.3, 0.8, -1.57]]
+    point_6 = [[1.3, 0.3, -1.57]]
+
+    inspection_route = [point_1, point_2, point_3, point_4, point_5, point_6]
 
     # Set our demo's initial pose
     initial_pose = PoseStamped()
@@ -95,51 +148,20 @@ def main():
     navigator.waitUntilNav2Active()
 
     # Send our route
-    inspection_points = []
-    inspection_pose = PoseStamped()
-    inspection_pose.header.frame_id = 'map'
-    inspection_pose.header.stamp = navigator.get_clock().now().to_msg()
-    #inspection_pose.pose.orientation.z = 0.0
-    #inspection_pose.pose.orientation.w = 1.0
-    for pt in inspection_route:
-        # Takes the euler angle for yaw and gets the quaternion
-        x, y, z, w = quaternion_from_euler(0, 0, pt[2])
-        # Specifies the x pose for the specific point
-        inspection_pose.pose.position.x = pt[0]
-        # Specifies the y pose for the specific point
-        inspection_pose.pose.position.y = pt[1]
-        # Specifies the orientation for the robot at the end
-        inspection_pose.pose.orientation.x = x
-        inspection_pose.pose.orientation.y = y
-        inspection_pose.pose.orientation.z = z
-        inspection_pose.pose.orientation.w = w
-        inspection_points.append(deepcopy(inspection_pose))
-        print('inspection points loaded')
-    navigator.followWaypoints(inspection_points)
-
-    # Do something during our route (e.x. AI to analyze stock information or upload to the cloud)
-    # Simply the current waypoint ID for the demonstation
-    i = 0
-    while not navigator.isTaskComplete():
-        i += 1
-        feedback = navigator.getFeedback()
-        if feedback and i % 5 == 0:
-            print('Executing current waypoint: ' +
-                  str(feedback.current_waypoint + 1) + '/' + str(len(inspection_points)))
-
-    result = navigator.getResult()
-    if result == TaskResult.SUCCEEDED:
-        print('Inspection of shelves complete! Returning to start...')
-    elif result == TaskResult.CANCELED:
-        print('Inspection of shelving was canceled. Returning to start...')
-    elif result == TaskResult.FAILED:
-        print('Inspection of shelving failed! Returning to start...')
-
-    # go back to start
-    initial_pose.header.stamp = navigator.get_clock().now().to_msg()
-    navigator.goToPose(initial_pose)
-    while not navigator.isTaskComplete():
-        pass
+    active = True
+    step = 0
+    while active:
+        if navigate_to(navigator, inspection_route[step]):
+            step += 1
+            print('Initating Leak Check Procedure')
+        else:
+            if step:
+                recover_position(navigator, inspection_route[step - 1])
+            else:
+                navigator.goToPose(initial_pose)
+                while not navigator.isTaskComplete():
+                    pass
+            
 
     exit(0)
 
