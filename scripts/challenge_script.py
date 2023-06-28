@@ -123,12 +123,12 @@ def main():
     navigator = BasicNavigator()
 
     #Points for route, points are x, y, yaw respectively
-    point_1 = [[0, 1.3, 1.57]]
-    point_2 = [[0.5, 1.3, 0]]
-    point_3 = [[1, 1.3, 0]]
-    point_4 = [[1.3, 2.8, 1.57],
-               [3.0, 3.35, 1.57]]
-    point_5 = [[1.3, 2.8, 1.57],
+    point_1 = [[0.16, 1.83, 0.0]]
+    point_2 = [[0.66, 1.83, 0.0]]
+    point_3 = [[1.16, 1.83, 0.0]]
+    point_4 = [[1.3, 3.33, 1.57],
+               [3.0, 3.35, 0]]
+    point_5 = [[1.3, 3.33, 3.14],
                [1.3, 0.8, -1.57]]
     point_6 = [[1.3, 0.3, -1.57]]
 

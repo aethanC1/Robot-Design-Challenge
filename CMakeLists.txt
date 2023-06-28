@@ -50,8 +50,8 @@ install(
 install(PROGRAMS
 #  scripts/wp_follower.py
   scripts/demo_inspection.py
+  scripts/challenge_script.py
   DESTINATION lib/${PROJECT_NAME})
-
 
 
 if(BUILD_TESTING)
