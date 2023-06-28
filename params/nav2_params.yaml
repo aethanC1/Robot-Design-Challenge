@@ -19,8 +19,8 @@ amcl:
     laser_min_range: 0.12
     laser_model_type: "likelihood_field"
     max_beams: 180
-    max_particles: 300
-    min_particles: 50
+    max_particles: 2000
+    min_particles: 1000
     odom_frame_id: "odom"
     pf_err: 0.02
     pf_z: 0.99
@@ -117,7 +117,7 @@ controller_server:
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
       required_movement_radius: 0.5
-      movement_time_allowance: 10.0
+      movement_time_allowance: 13.0
     # Goal checker parameters
     #precise_goal_checker:
     #  plugin: "nav2_controller::SimpleGoalChecker"
@@ -256,7 +256,7 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 1.0
-        inflation_radius: 0.5
+        inflation_radius: 0.58
       always_send_full_costmap: True
   global_costmap_client:
     ros__parameters:
