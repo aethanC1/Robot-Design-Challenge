@@ -129,10 +129,20 @@ def main():
     point_4 = [[1.3, 3.33, 1.57],
                [3.0, 3.35, 0]]
     point_5 = [[1.3, 3.33, 3.14],
-               [1.3, 0.8, -1.57]]
-    point_6 = [[1.3, 0.3, -1.57]]
+               [1.3, 1.2, -1.57]]
+    point_6 = [[1.3, 0.7, -1.57]]
+    point_7 = [[1.8, 1.83, 1.57]]
+    point_8 = [[2.3, 1.83, 0]]
+    point_9 = [[2.3, 1.2, -1.57],
+    		[3.05, 1.2, 0]]
+    point_10 = [[3.05, 1.7, 1.57]]
+    point_11 = [[3.05, 2.3, 1.57]]
+    point_12 = [[3.6, 1.7, 0]]
+    point_13 = [[3.6, 0, 0]]
+    
+    		
 
-    inspection_route = [point_1, point_2, point_3, point_4, point_5, point_6]
+    inspection_route = [point_1, point_2, point_3, point_4, point_5, point_6, point_7, point_8, point_9, point_10, point_11, point_12, point_13]
 
     # Set our demo's initial pose
     initial_pose = PoseStamped()
@@ -148,9 +158,9 @@ def main():
     navigator.waitUntilNav2Active()
 
     # Send our route
-    active = True
+    max_steps = len(inspection_route)
     step = 0
-    while active:
+    while step < max_steps:
         if navigate_to(navigator, inspection_route[step]):
             step += 1
             print('Initating Leak Check Procedure')
