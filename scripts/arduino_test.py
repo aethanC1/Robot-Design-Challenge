@@ -1,4 +1,6 @@
 import serial
+import rclpy
+from rclpy.node import Node
 import time
 
 nano = serial.Serial('/dev/ttyUSB0', 9600, timeout = 1)

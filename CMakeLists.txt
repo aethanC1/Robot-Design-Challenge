@@ -43,7 +43,7 @@ install(
 
 
 # Install Python modules
-#ament_python_install_package(${PROJECT_NAME})
+ament_python_install_package(${PROJECT_NAME})
 
 
 # Install Python executables
@@ -51,6 +51,7 @@ install(PROGRAMS
 #  scripts/wp_follower.py
   scripts/demo_inspection.py
   scripts/challenge_script.py
+  scripts/individual_verification.py
   DESTINATION lib/${PROJECT_NAME})
 
 
