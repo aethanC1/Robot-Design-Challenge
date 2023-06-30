@@ -15,7 +15,7 @@ class challenge_node(Node):
     	self.navigator = BasicNavigator()
     	self.publisher = self.create_publisher(Twist, 'cmd_vel', 10)
     	self.message = Twist()
-    	self.nano = serial.Serial('/dev/ttyUSB0', 9600, timeout = 1)
+    	self.nano = serial.Serial('/dev/ttyUSB4', 9600, timeout = 1)
     	time.sleep(1)
     	self.nano.readline()
     	#Points for route, points are x, y, yaw respectively
@@ -153,7 +153,7 @@ class challenge_node(Node):
         self.nano.write(b'ground')
         time.sleep(0.12)
         ground = str(self.nano.readline()).strip("b'\\rn")
-        while ground != "pipe" or ground != "grate" and timeout < 40:
+        while ground == 'wood' and timeout < 25:
             self.nano.write(b'ground')
             time.sleep(0.12)
             ground = str(self.nano.readline()).strip("b'\\rn")

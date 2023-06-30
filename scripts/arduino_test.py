@@ -3,7 +3,7 @@ import rclpy
 from rclpy.node import Node
 import time
 
-nano = serial.Serial('/dev/ttyUSB0', 9600, timeout = 1)
+nano = serial.Serial('/dev/ttyUSB3', 9600, timeout = 1)
 time.sleep(1)
 nano.readline()
 for i in range(8):
