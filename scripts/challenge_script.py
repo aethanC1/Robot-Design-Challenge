@@ -11,31 +11,31 @@ from rclpy.node import Node
 class challenge_node(Node):
 
     def __init__(self):
-    	super().__init__('challenge_node')
-    	self.navigator = BasicNavigator()
-    	self.publisher = self.create_publisher(Twist, 'cmd_vel', 10)
-    	self.message = Twist()
-    	self.nano = serial.Serial('/dev/ttyUSB4', 9600, timeout = 1)
-    	time.sleep(1)
-    	self.nano.readline()
+        super().__init__('challenge_node')
+        self.navigator = BasicNavigator()
+        self.publisher = self.create_publisher(Twist, 'cmd_vel', 10)
+        self.message = Twist()
+        self.nano = serial.Serial('/dev/ttyUSB4', 9600, timeout = 1)
+        time.sleep(1)
+        self.nano.readline()
     	#Points for route, points are x, y, yaw respectively
-    	point_1 = [[0.16, 1.83, 0.0]]
-    	point_2 = [[0.66, 1.83, 0.0]]
-    	point_3 = [[1.16, 1.83, 0.0]]
-    	point_4 = [[1.3, 3.33, 1.57],[3.0, 3.35, 0]]
-    	point_5 = [[1.3, 3.33, 3.14],[1.3, 1.2, -1.57]]
-    	point_6 = [[1.3, 0.7, -1.57]]
-    	point_7 = [[1.8, 1.83, 1.57]]
-    	point_8 = [[2.3, 1.83, 0]]
-    	point_9 = [[2.3, 1.2, -1.57],[3.05, 1.2, 0]]
-    	point_10 = [[3.05, 1.7, 1.57]]
-    	point_11 = [[3.05, 2.3, 1.57]]
-    	point_12 = [[3.6, 1.7, 0]]
-    	point_13 = [[3.6, 0.0, 0.0]]
-    	self.inspection_route = [point_1, point_2, point_3, point_4, point_5, point_6, point_7, point_8, point_9, point_10, point_11, point_12, point_13]
+        point_1 = [[0.16, 1.83, 0.0]]
+        point_2 = [[0.66, 1.83, 0.0]]
+        point_3 = [[1.16, 1.83, 0.0]]
+        point_4 = [[1.3, 3.33, 1.57],[3.0, 3.35, 0]]
+        point_5 = [[1.3, 3.33, 3.14],[1.3, 1.2, -1.57]]
+        point_6 = [[1.3, 0.7, -1.57]]
+        point_7 = [[1.8, 1.83, 1.57]]
+        point_8 = [[2.3, 1.83, 0]]
+        point_9 = [[2.3, 1.2, -1.57],[3.05, 1.2, 0]]
+        point_10 = [[3.05, 1.7, 1.57]]
+        point_11 = [[3.05, 2.3, 1.57]]
+        point_12 = [[3.6, 1.7, 0]]
+        point_13 = [[3.6, 0.0, 0.0]]
+        self.inspection_route = [point_1, point_2, point_3, point_4, point_5, point_6, point_7, point_8, point_9, point_10, point_11, point_12, point_13]
     	# Wait for navigation to fully activate
-    	self.navigator.waitUntilNav2Active()
-    	self.main()
+        self.navigator.waitUntilNav2Active()
+        self.main()
 
     def euler_from_quaternion(self, x, y, z, w):
             """
