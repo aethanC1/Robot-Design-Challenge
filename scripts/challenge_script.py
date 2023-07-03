@@ -15,7 +15,11 @@ class challenge_node(Node):
         self.navigator = BasicNavigator()
         self.publisher = self.create_publisher(Twist, 'cmd_vel', 10)
         self.message = Twist()
-        self.nano = serial.Serial('/dev/ttyUSB4', 9600, timeout = 1)
+        try:
+        	self.nano = serial.Serial('/dev/ttyUSB0', 9600, timeout = 1)
+        except Exception:
+        	self.nano = serial.Serial('/dev/ttyUSB4', 9600, timeout = 1)
+        	
         time.sleep(1)
         self.nano.readline()
     	#Points for route, points are x, y, yaw respectively

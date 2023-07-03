@@ -51,7 +51,8 @@ install(PROGRAMS
 #  scripts/wp_follower.py
   scripts/demo_inspection.py
   scripts/challenge_script.py
-  scripts/individual_verification.py
+  scripts/individual_verification_trial1.py
+  scripts/individual_verification_trial2.py
   DESTINATION lib/${PROJECT_NAME})
 
 

@@ -24,7 +24,7 @@ def generate_launch_description():
   nav2_dir = FindPackageShare(package='nav2_bringup').find('nav2_bringup') 
   nav2_launch_dir = os.path.join(nav2_dir, 'launch') 
   static_map_path = os.path.join(pkg_share, 'maps', 'challenge_slam_map.yaml')
-  nav2_params_path = os.path.join(pkg_share, 'params', 'nav2_params_sim.yaml')
+  nav2_params_path = os.path.join(pkg_share, 'params', 'nav2_params_hardware.yaml')
   nav2_bt_path = FindPackageShare(package='nav2_bt_navigator').find('nav2_bt_navigator')
   behavior_tree_xml_path = os.path.join(nav2_bt_path, 'behavior_trees', 'navigate_w_replanning_and_recovery.xml')
   
@@ -104,7 +104,7 @@ def generate_launch_description():
     
   declare_use_sim_time_cmd = DeclareLaunchArgument(
     name='use_sim_time',
-    default_value='True',
+    default_value='False',
     description='Use simulation (Gazebo) clock if true')
 
    
@@ -136,7 +136,7 @@ def generate_launch_description():
   start_waypoint_nav = Node(
     condition=IfCondition(use_rviz),
     package='eced3901',
-    executable='challenge_script.py',
+    executable='individual_verification_trial2.py',
     name='waypoint_nav',
     output='screen') 
   
