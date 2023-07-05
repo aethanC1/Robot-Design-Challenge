@@ -146,6 +146,32 @@ class challenge_node(Node):
         while not self.navigator.isTaskComplete():
             pass
 
+    def response_listen(self, timeout_limit = 25):
+        """
+        Will wait for a response and return a formatted string from
+        the serial output buffer of the connected arduino.
+        
+        Parameters
+        ------------------------------------------------
+        timeout_limit: the max number of 10ms sleep cycles it waits
+        for a response, default is 25 cycles/250 ms
+
+        ------------------------------------------------
+        Returns:
+        response: string recieved from arduino serial comm
+        """
+        timeout = 0
+        response = ''
+        while not self.nano.in_waiting:
+            if timeout == timeout_limit:
+                return response
+            timeout += 1
+            time.sleep(0.01)
+        else:
+            response = self.nano.readline().decode('utf-8').rstrip()
+            return response
+
+
     def detect_ground(self):
         """
         Continously queries the pipe/ground detector subsystem to
@@ -155,18 +181,16 @@ class challenge_node(Node):
         
         timeout = 0
         self.nano.write(b'ground')
-        time.sleep(0.12)
-        ground = str(self.nano.readline()).strip("b'\\rn")
+        ground = self.response_listen()
         while ground == 'wood' and timeout < 25:
             self.nano.write(b'ground')
-            time.sleep(0.12)
-            ground = str(self.nano.readline()).strip("b'\\rn")
+            ground = self.response_listen()
             timeout += 1
 
     def detect_humidity(self):
         """
         Queries the humidity sensor multiple times to get multiple readings,
-        if the readings are over a certain thread will return an indication 
+        if the readings are over a certain threshold will return an indication 
         leak is detected
 
         -----------------------------------------------------------------
@@ -174,20 +198,17 @@ class challenge_node(Node):
             True if leak detected
             False otherwise
         """
-
         num_samples = 0
         positive_samples = 0
         while num_samples < 10:
             self.nano.write(b'humidity')
-            time.sleep(0.12)
-            result = str(self.nano.readline()).strip("b'\\rn")
+            result = self.response_listen()
             if result == "true":
                 positive_samples += 1
             num_samples += 1
-        if positive_samples > 3:
-            return True
-        else:
-            return False
+            if positive_samples > 3:
+                return True
+        return False
     
     def main(self):
         """
@@ -215,8 +236,10 @@ class challenge_node(Node):
                 self.publisher.publish(self.message)
                 leak = self.detect_humidity()
                 if leak:
-                    self.nano.write('mitigate')
-
+                    self.nano.write(b'mitigate')
+                    self.response_listen(timeout = 200)
+                else:
+                    self.nano.write(b'all_clear')
                 step += 1
             else:
                 if step:

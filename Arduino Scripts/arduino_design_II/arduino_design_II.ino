@@ -71,6 +71,9 @@ void loop()
   if(command == "mitigate"){
     Serial.println("mitigation complete");
   }
+  if(command == "all_clear"){
+    Serial.println("green_light_on");
+  }
 
   delay(100);
 }
