@@ -162,7 +162,7 @@ class trial_one(Node):
                 self.message.angular.z = 0.1
                 self.publisher.publish(self.message)
                 time.sleep(1.5)
-                self.message.angular.z = 0
+                self.message.angular.z = 0.0
                 self.publisher.publish(self.message)
                 step += 1
             else:
