@@ -1,4 +1,10 @@
 #include <Adafruit_NeoPixel.h>
+#define green 13 // Define the pin for the LED
+#define red 2
+int refHumid = 0;
+int RH = 15;  //output is pin A1
+int realHumid = 0;
+int Value = 420;
 float base = 0;
 float base1 = 0;
 float base2 = 0;
@@ -19,6 +25,8 @@ void setup()
 {
   strip.begin();
   Serial.begin(9600);
+  pinMode(green, OUTPUT);
+  pinMode(red, OUTPUT);
   pinMode(pipe, OUTPUT);
   pinMode(wood, OUTPUT);
   pinMode(vent, OUTPUT);
@@ -77,8 +85,17 @@ void loop()
     material(delta);
   }
   if(command == "humidity"){
-    if (humidity_sample == true) {Serial.println("true");}
-    else {Serial.println("false");}
+    realHumid = analogRead(RH);
+    if(realHumid >= Value){
+      Serial.println("true");
+      digitalWrite(green, LOW); // Turn on the LED if humidity is over the threshold
+      digitalWrite(red, HIGH);
+    } 
+    else {
+      Serial.println("false");
+      digitalWrite(green, HIGH); // Turn off the LED if humidity is below the threshold
+      digitalWrite(red, LOW);
+    }
   }
   if(command == "mitigate"){
     Serial.println("mitigation complete");
@@ -93,6 +110,8 @@ void loop()
     delay(20);
     base3 = analogRead(input);
     base = (base1 + base2 + base3)/3;
+    refHumid = analogRead(RH);
+    Serial.println(base);
   }
   if(command == "light_on"){
     light_on();
@@ -101,6 +120,20 @@ void loop()
   if(command == "light_off"){
     light_off();
     Serial.println("light_off");
+  }
+  if(command == "green_on"){
+    for (int i = 0; i < numLed; i++) {
+    strip.setPixelColor(i, strip.Color(0, 255, 0));
+      }
+    strip.show();
+    Serial.println("green_on");
+  }
+  if(command == "red_on"){
+    for (int i = 0; i < numLed; i++) {
+    strip.setPixelColor(i, strip.Color(255, 0, 0));
+      }
+    strip.show();
+    Serial.println("red_on");
   }
 
   delay(100);

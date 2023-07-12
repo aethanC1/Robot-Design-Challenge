@@ -16,21 +16,21 @@ class challenge_node(Node):
         self.publisher = self.create_publisher(Twist, 'cmd_vel', 10)
         self.message = Twist()
         try:
-        	self.nano = serial.Serial('/dev/ttyUSB0', 9600, timeout = 1)
+            self.nano = serial.Serial('/dev/ttyUSB4', 9600, timeout = 1)
         except Exception:
-        	self.nano = serial.Serial('/dev/ttyUSB4', 9600, timeout = 1)
-        	
+            self.nano = serial.Serial('/dev/ttyUSB4', 9600, timeout = 1)
         time.sleep(1)
         self.nano.readline()
     	#Points for route, points are x, y, yaw respectively
         point_1 = [[0.0, 0.0, 1.57]]
-        point_2 = [[1.72, 1.72, 0.75]]        
+        point_2 = [[-0.03, 1.81, 2.2]]
+        point_3 = [[1.78, 1.81, 2.2]] 
         #point_3 = [[1.3, 3.33, 1.57],[3.0, 3.35, 0]]
         #point_4 = [[1.3, 3.33, 3.14],[1.3, 1.2, -1.57]]
         #point_5 = [[1.3, 0.7, -1.57]]
         #point_6 = [[1.8, 1.83, 1.57]]        
         #point_7 = [[3.6, 0.0, 0.0]]
-        self.inspection_route = [point_1, point_2]#, point_3, point_4, point_5, point_6, point_7]
+        self.inspection_route = [point_1, point_2, point_3]#, point_4, point_5, point_6, point_7]
     	# Wait for navigation to fully activate
         self.navigator.waitUntilNav2Active()
         self.main()
@@ -140,7 +140,12 @@ class challenge_node(Node):
         while not self.navigator.isTaskComplete():
             pass
 
-    def response_listen(self, timeout_limit = 25):
+    def response_listen(self, timeout= 0.12):
+        time.sleep(timeout)
+        response = self.nano.readline().decode('utf-8').rstrip()
+        print('\n\n\n\n\n\n'+response+'\n\n\n\n\n\n')
+        return response
+    def response_listen_2(self, timeout_limit = 25):
         """
         Will wait for a response and return a formatted string from
         the serial output buffer of the connected arduino.
@@ -163,6 +168,7 @@ class challenge_node(Node):
             time.sleep(0.01)
         else:
             response = self.nano.readline().decode('utf-8').rstrip()
+            print('\n\n\n\n\n\nresponse\n\n\n\n\n\n')
             return response
 
 
@@ -172,20 +178,20 @@ class challenge_node(Node):
         see if the sensor is positioned over the pipe/grate, will either
         stop when over the pipe, or after approximate timeout of 5 seconds
         """
-        grate = False
+    
         timeout = 0
         self.nano.write(b'light_on')
-        self.response_listen(100)
+        self.response_listen()
+        time.sleep(1)
         self.nano.write(b'ground')
         ground = self.response_listen()
-        while ground == 'wood' and timeout < 25 and not grate:
+        time.sleep(0.15)
+        while ground == 'wood' and timeout < 25:
             self.nano.write(b'ground')
             ground = self.response_listen()
-            if ground == 'grate':
-                grate = True
             timeout += 1
         self.nano.write(b'light_off')
-        self.response_listen(100)
+        self.response_listen()
 
     def detect_humidity(self):
         """
@@ -231,23 +237,35 @@ class challenge_node(Node):
             if self.navigate_to(self.inspection_route[step]):
                 if not step:
                     self.nano.write(b'light_on')
-                    self.response_listen(100)
+                    self.response_listen()
+                    time.sleep(1)
                     self.nano.write(b'baseline')
-                    self.response_listen(100)
+                    self.response_listen()
+                    time.sleep(1)
                     self.nano.write(b'light_off')
-                    self.response_listen(100)
+                    self.response_listen()
+                    step+=1
                 else:
-                    self.message.angular.z = 0.1
+                    self.message.angular.z = -0.1
                     self.publisher.publish(self.message)
                     self.detect_ground()
                     self.message.angular.z = 0.0
                     self.publisher.publish(self.message)
                     leak = self.detect_humidity()
                     if leak:
+                        self.nano.write(b'green_on')
+                        self.response_listen()
                         self.nano.write(b'mitigate')
-                        self.response_listen(timeout = 200)
+                        self.response_listen()
+                        time.sleep(2)
+                        self.nano.write(b'light_off')
+                        self.response_listen()
                     else:
-                        self.nano.write(b'all_clear')
+                        self.nano.write(b'red_on')
+                        self.response_listen()
+                        time.sleep(2)
+                        self.nano.write(b'light_off')
+                        self.response_listen()
                     step += 1
             else:
                 if step:
