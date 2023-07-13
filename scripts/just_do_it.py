@@ -16,7 +16,7 @@ class challenge_node(Node):
         self.publisher = self.create_publisher(Twist, 'cmd_vel', 10)
         self.message = Twist()
         try:
-            self.nano = serial.Serial('/dev/ttyUSB4', 9600, timeout = 1)
+            self.nano = serial.Serial('/dev/ttyUSB0', 9600, timeout = 1)
         except Exception:
             self.nano = serial.Serial('/dev/ttyUSB4', 9600, timeout = 1)
         time.sleep(1)
@@ -25,12 +25,10 @@ class challenge_node(Node):
         point_1 = [[0.0, 0.0, 1.57]]
         point_2 = [[-0.03, 1.81, 2.2]]
         point_3 = [[1.78, 1.81, 2.2]] 
-        #point_3 = [[1.3, 3.33, 1.57],[3.0, 3.35, 0]]
-        #point_4 = [[1.3, 3.33, 3.14],[1.3, 1.2, -1.57]]
-        #point_5 = [[1.3, 0.7, -1.57]]
-        #point_6 = [[1.8, 1.83, 1.57]]        
-        #point_7 = [[3.6, 0.0, 0.0]]
-        self.inspection_route = [point_1, point_2, point_3]#, point_4, point_5, point_6, point_7]
+        point_4 = [[1.3, 3.33, 0.0],[2.95, 3.1, 1.57]]
+        point_5 = [[1.3, 3.33, 3.14],[2.3, 1.2, 0.0],[2.95, 1.81, 2.2]]
+        point_6 = [[3.5, 0.0, 0.0]]
+        self.inspection_route = [point_1, point_2, point_3, point_4, point_5, point_6]
     	# Wait for navigation to fully activate
         self.navigator.waitUntilNav2Active()
         self.main()
@@ -143,7 +141,6 @@ class challenge_node(Node):
     def response_listen(self, timeout= 0.12):
         time.sleep(timeout)
         response = self.nano.readline().decode('utf-8').rstrip()
-        print('\n\n\n\n\n\n'+response+'\n\n\n\n\n\n')
         return response
     def response_listen_2(self, timeout_limit = 25):
         """
@@ -168,7 +165,6 @@ class challenge_node(Node):
             time.sleep(0.01)
         else:
             response = self.nano.readline().decode('utf-8').rstrip()
-            print('\n\n\n\n\n\nresponse\n\n\n\n\n\n')
             return response
 
 
@@ -186,7 +182,7 @@ class challenge_node(Node):
         self.nano.write(b'ground')
         ground = self.response_listen()
         time.sleep(0.15)
-        while ground == 'wood' and timeout < 25:
+        while ground == 'wood' and timeout < 5:
             self.nano.write(b'ground')
             ground = self.response_listen()
             timeout += 1
@@ -245,6 +241,8 @@ class challenge_node(Node):
                     self.nano.write(b'light_off')
                     self.response_listen()
                     step+=1
+                elif step == max_steps -1:
+                    step += 1
                 else:
                     self.message.angular.z = -0.1
                     self.publisher.publish(self.message)
@@ -253,7 +251,7 @@ class challenge_node(Node):
                     self.publisher.publish(self.message)
                     leak = self.detect_humidity()
                     if leak:
-                        self.nano.write(b'green_on')
+                        self.nano.write(b'red_on')
                         self.response_listen()
                         self.nano.write(b'mitigate')
                         self.response_listen()
@@ -261,7 +259,7 @@ class challenge_node(Node):
                         self.nano.write(b'light_off')
                         self.response_listen()
                     else:
-                        self.nano.write(b'red_on')
+                        self.nano.write(b'green_on')
                         self.response_listen()
                         time.sleep(2)
                         self.nano.write(b'light_off')
@@ -275,7 +273,7 @@ class challenge_node(Node):
                     while not self.navigator.isTaskComplete():
                         pass
                 
-
+        self.nano.write(b'reset')
         
 
 

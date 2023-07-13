@@ -1,6 +1,8 @@
 #include <Adafruit_NeoPixel.h>
 #define green 13 // Define the pin for the LED
 #define red 2
+#define out 18
+#define in 17
 int refHumid = 0;
 int RH = 15;  //output is pin A1
 int realHumid = 0;
@@ -19,12 +21,15 @@ int vent = 6;
 float delta = 0;
 int ring = 3;
 int numLed = 12;
+int count = 0;
 Adafruit_NeoPixel strip(numLed, ring, NEO_GRB + NEO_KHZ800);
 
 void setup()
 {
   strip.begin();
   Serial.begin(9600);
+  pinMode(out, OUTPUT);
+  pinMode(in, OUTPUT);
   pinMode(green, OUTPUT);
   pinMode(red, OUTPUT);
   pinMode(pipe, OUTPUT);
@@ -98,11 +103,25 @@ void loop()
     }
   }
   if(command == "mitigate"){
+    if (count == 0) {     //IF the linear actuator is in position 0, move to position 1
+      count++;
+      digitalWrite(in, HIGH);
+      delay(3000);
+      digitalWrite(in, LOW);
+      }
+    else if (count == 1) {   //if the LA is in position 1 move to position 2
+      count++;
+      digitalWrite(in, HIGH);
+      delay(5500);
+      digitalWrite(in, LOW);
+  }
     Serial.println("mitigation complete");
   }
+  
   if(command == "all_clear"){
     Serial.println("green_light_on");
   }
+  
   if(command == "baseline"){
     base1 = analogRead(input);//arduino takes initial voltage reading, this will be the baseline and the measurement for the wood surface
     delay(20);
@@ -113,27 +132,49 @@ void loop()
     refHumid = analogRead(RH);
     Serial.println(base);
   }
+  
   if(command == "light_on"){
     light_on();
     Serial.println("light_on");
   }
+  
   if(command == "light_off"){
     light_off();
     Serial.println("light_off");
   }
+  
   if(command == "green_on"){
     for (int i = 0; i < numLed; i++) {
-    strip.setPixelColor(i, strip.Color(0, 255, 0));
+    strip.setPixelColor(i, strip.Color(0, 50, 0));
       }
     strip.show();
     Serial.println("green_on");
   }
+  
   if(command == "red_on"){
     for (int i = 0; i < numLed; i++) {
-    strip.setPixelColor(i, strip.Color(255, 0, 0));
+    strip.setPixelColor(i, strip.Color(50, 0, 0));
       }
     strip.show();
     Serial.println("red_on");
+    }
+  
+  if(command == "reset"){
+    if (count == 1) {     //reset to position 0 from position 1
+      digitalWrite(out, HIGH);
+      delay(3000);
+      digitalWrite(out, LOW);
+      count = 0;
+    } 
+    else if (count == 2) {      //reset to position 0 from position 2
+      count = 0;
+      digitalWrite(out, HIGH);
+      delay(8500);
+      digitalWrite(out, LOW);
+    } 
+    else {                    // //reset to position 0 from position 0
+      count = 0;
+    }
   }
 
   delay(100);
